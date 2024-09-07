@@ -1,6 +1,4 @@
 import os
-import datetime
-import time
 
 # Variables globales: Colores en formato ANSI escape code
 reset_color = "\033[0m"
@@ -18,6 +16,9 @@ def gotoxy(x,y):
 
 def borrarPantalla():
     os.system("clear") # en windows es cls 
+
+def linea(longitud, color):
+    print(f"{color}{longitud * '-'}{reset_color}")
 
 def mensaje(msg,f,c):
     pass

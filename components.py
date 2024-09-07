@@ -1,4 +1,5 @@
 from utilities import borrarPantalla, gotoxy
+from utilities import blue_color, purple_color
 import time
 
 class Menu:
@@ -53,8 +54,37 @@ class Valida:
                 print("          ------><  | {} ".format(mensajeError))
         return valor
     
-    def cedula():
-        pass
+    def cedula(mensaje, col1, fil1, col2, fil2):
+        while True:
+            gotoxy(col1, fil1)
+            print(blue_color + f"{mensaje}")
+            gotoxy(col2, fil2)
+            cedula = input(purple_color)
+            
+            if len(cedula) == 10 and cedula.isdigit():
+                coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2]
+                suma = 0
+                
+                for i in range(9):
+                    digito = int(cedula[i]) * coeficientes[i]
+                    if digito > 9:
+                        digito -= 9
+                    suma += digito
+                
+                total = suma % 10
+                if total != 0:
+                    total = 10 - total
+                
+                
+                if total == int(cedula[9]):
+                    return cedula
+            
+            gotoxy(col2, fil2)
+            print(purple_color + "El formato del DNI es incorrecto.")
+            time.sleep(1)
+            gotoxy(col2, fil2)
+            print(" "*60)
+
     
 class otra:
     pass    

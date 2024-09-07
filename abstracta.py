@@ -1,30 +1,62 @@
 from abc import ABC, abstractmethod
 
-# Una clase abstracta en Python es una clase que no puede ser instanciada directamente, sino que sirve como una plantilla para otras clases. Las clases abstractas pueden contener métodos abstractos(al menos uno), que son métodos declarados pero no implementados en la clase abstracta. Las subclases de una clase abstracta deben proporcionar implementaciones concretas para todos los métodos abstractos definidos en la clase abstracta.
 class Alumno(ABC):
-    def __init__(self, nombre, edad, grado, escuela, promedio):
-        self.nombre = nombre
-        self.edad = edad
-        self.grado = grado
-        self.escuela = escuela
-        self.promedio = promedio
+    """Clase abstracta que representa a un alumno."""
+
+    def __init__(self, nombre, edad, grado, escuela):
+        self._nombre = nombre
+        self._edad = edad
+        self._grado = grado
+        self._escuela = escuela
+
+    @property
+    def nombre(self):
+        """Obtiene el nombre del alumno."""
+        return self._nombre
+
+    @property
+    def edad(self):
+        """Obtiene la edad del alumno."""
+        return self._edad
+
+    @property
+    def grado(self):
+        """Obtiene la edad del alumno."""
+        return self._grado
+    
+    @property
+    def escuela(self):
+        """Obtiene la edad del alumno."""
+        return self._escuela
 
     @abstractmethod
     def notas(self):
+        """Devuelve las notas del alumno."""
         pass
-  
+
     def mostrar(self):
+        """Imprime el nombre del alumno."""
         print(self.nombre)
 
-# Crear una clase que herede la clase abstracta con un método de presentar datos.
 class Estudiante(Alumno):
+    """Subclase concreta que representa a un estudiante."""
+
+    def __init__(self, nombre, edad, grado, escuela, promedio):
+        super().__init__(nombre, edad, grado, escuela)
+        self._promedio = promedio
+
+    @property
+    def promedio(self):
+        """Obtiene el promedio del estudiante."""
+        return self._promedio
+
     def notas(self):
+        """Devuelve el promedio del estudiante como sus notas."""
         return self.promedio
 
     def presentar_datos(self):
+        """Devuelve una cadena con la información del estudiante."""
         return f'Nombre: {self.nombre}, Edad: {self.edad}, Grado: {self.grado}, Escuela: {self.escuela}, Promedio: {self.promedio}'
-
-# alum = Alumno('Ana', 20, 'Segundo', 'Escuela XYZ', 85)# no se puede instanciar la clase abstracta
 
 if __name__ == '__main__':
     estudiante = Estudiante('Snayder', 20, 'Tercero', 'Educando Futuro', 85)

@@ -1,10 +1,36 @@
-from datetime import date  # Importa la clase date del módulo datetime para manejar fechas.
+from datetime import date
 
-# Clase que representa una asignatura o materia dentro de un nivel educativo.
 class Asignatura:
+    """Representa una asignatura o materia dentro de un nivel educativo."""
+
     def __init__(self, id, descripcion, nivel, active):
-        self.id = id  # Identificador único para la asignatura.
-        self.descripcion = descripcion  # Nombre o descripción de la asignatura (por ejemplo, "Matemáticas").
-        self.nivel = nivel  # Nivel educativo al que pertenece la asignatura.
-        self.fecha_creacion = date.today()  # Fecha de creación de la asignatura, se asigna la fecha actual.
-        self.active = active  # Estado de actividad de la asignatura (True o False).
+        self._id = id
+        self._descripcion = descripcion
+        self._nivel = nivel
+        self._fecha_creacion = date.today()
+        self._active = active
+
+    @property
+    def id(self):
+        """Obtiene el identificador único de la asignatura."""
+        return self._id
+
+    @property
+    def descripcion(self):
+        """Obtiene la descripción de la asignatura."""
+        return self._descripcion
+
+    @property
+    def nivel(self):
+        """Obtiene el nivel educativo al que pertenece la asignatura."""
+        return self._nivel
+    
+    @property
+    def fecha_creacion(self):
+        """Obtiene la fecha de creación del registro de la asignatura."""
+        return self._fecha_creacion
+    
+    @property
+    def active(self):
+        """Obtiene el estado de actividad de la asignatura."""
+        return self._active
