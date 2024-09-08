@@ -8,7 +8,7 @@ class Estudiante:
         self._nombre = nombre
         self._apellido = apellido
         self._fecha_nacimiento = fecha_nacimiento
-        self._fecha_creacion = date.today()
+        self.fecha_creacion = date.today().strftime('%Y-%m-%d')
         self._active = active
 
     @property

@@ -11,7 +11,7 @@ class Periodo:
 
         self._id = id
         self._periodo = periodo
-        self._fecha_creacion = date.today()
+        self.fecha_creacion = date.today().strftime('%Y-%m-%d')
         self._active = active
 
     @property

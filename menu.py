@@ -1,4 +1,4 @@
-from utilities import green_color, blue_color, purple_color, reset_color, red_color, borrarPantalla, linea, gotoxy
+from utilities import green_color, blue_color, purple_color, reset_color, red_color, borrarPantalla, linea, gotoxy, cyan_color
 from Icrud import Icrud
 from crudStudents import CrudStudents
 from crudTeacher import CrudTeacher
@@ -15,14 +15,14 @@ import platform
 opc = ''
 while opc != '6':
     borrarPantalla()
-    menu_main = Menu("Menu Sistema Académico", ["1) Estudiantes", "2) Profesores", "3) Cursos", "4) Notas", "5) Salir"]) 
+    menu_main = Menu(f"{purple_color}Menu Sistema Académico", [f"{cyan_color}1) Estudiantes", "2) Profesores", "3) Cursos", "4) Notas", "5) Salir"]) 
     opc = menu_main.menu()
 
     if opc == '1':
         opc1 = ''
         while opc1 != '5':
             borrarPantalla()
-            menu_students = Menu("Menu Estudiantes", ["1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            menu_students = Menu(f"{purple_color}Menu Estudiantes {reset_color}", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
             opc1 = menu_students.menu()
             crud = CrudStudents()
             if opc1 == '1':

@@ -1,4 +1,12 @@
 import json
+from datetime import date
+
+class DateEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, date):
+            return o.strftime('%Y-%m-%d')
+        return super().default(o)
+
 class JsonFile:
     def __init__(self, filename):
         self.filename = filename

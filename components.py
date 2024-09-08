@@ -1,6 +1,7 @@
 from utilities import borrarPantalla, gotoxy
-from utilities import blue_color, purple_color, reset_color, red_color, green_color
+from utilities import blue_color, purple_color, reset_color, red_color, green_color, linea
 import time
+
 
 class Menu:
     def __init__(self,titulo="",opciones=[],col=6,fil=1):
@@ -10,13 +11,14 @@ class Menu:
         self.fil=fil
         
     def menu(self):
-        gotoxy(self.col,self.fil);print(self.titulo)
+        linea(80,green_color); print(f'{self.titulo}'.center(80)); linea(80,green_color)
         self.col-=5
         for opcion in self.opciones:
             self.fil +=1
-            gotoxy(self.col,self.fil);print(opcion)
-        gotoxy(self.col+5,self.fil+2)
-        opc = input(f"Elija opcion[1...{len(self.opciones)}]: ") 
+            print(opcion)
+        linea(80,green_color)
+        opc = input(f"{red_color}Elija opcion[1...{len(self.opciones)}]: {reset_color}") 
+        linea(80,green_color)
 
         return opc   
 
