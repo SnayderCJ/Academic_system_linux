@@ -1,8 +1,45 @@
-from datetime import date  # Importa la clase date del módulo datetime para manejar fechas.
+from datetime import date
 
 class Periodo:
+    """Representa un período académico en el sistema."""
+
     def __init__(self, id, periodo, active):
-        self.id = id  # Identificador único para el periodo.
-        self.periodo = periodo  # Nombre o descripción del periodo (por ejemplo, "Semestre 1").
-        self.fecha_creacion = date.today()  # Fecha de creación del periodo, se asigna la fecha actual.
-        self.active = active  # Estado de actividad del periodo (True o False).
+        if not periodo:
+            raise ValueError("El nombre del período no puede estar vacío.")
+        if not isinstance(active, bool):
+            raise ValueError("El estado 'active' debe ser True o False.")
+
+        self._id = id
+        self._periodo = periodo
+        self._fecha_creacion = date.today()
+        self._active = active
+
+    @property
+    def id(self):
+        """Obtiene el identificador único del período."""
+        return self._id
+
+    @property
+    def periodo(self):
+        """Obtiene el nombre o descripción del período."""
+        return self._periodo
+
+    @property
+    def fecha_creacion(self):
+        """Obtiene la fecha de creación del período."""
+        return self._fecha_creacion
+    
+    @property
+    def active(self):
+        """Obtiene el estado de actividad del período."""
+        return self._active
+    
+    
+
+    def activar(self):
+        """Activa el período."""
+        self._active = True
+
+    def desactivar(self):
+        """Desactiva el período."""
+        self._active = False

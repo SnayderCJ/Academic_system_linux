@@ -1,15 +1,32 @@
-from abstracta import Alumno, Estudiante
 from datetime import date
+from detalleNota import DetalleNota
 
 class Nota:
-    def __init__(self, id, periodo, profesor, asignatura, active):
-        self.id = id  # Identificador único para la nota.
-        self.periodo = periodo  # Periodo en el que se otorga la nota.
-        self.profesor = profesor  # Profesor que otorga la nota.
-        self.asignatura = asignatura  # Asignatura a la que pertenece la nota.
-        self.detalleNota = []  # Lista para almacenar los detalles de las notas para cada estudiante.
-        self.fecha_creacion = date.today()  # Fecha de creación del registro de la nota, se asigna la fecha actual.
-        self.active = active  # Estado de actividad de la nota (True o False).
-        
-    def addNota(self):
-        pass  # Método placeholder para añadir detalles de la nota.
+    """Representa una nota asociada a un periodo, profesor y asignatura."""
+
+    def __init__(self, id, periodo, profesor, asignatura, active=True):
+        self._id = id
+        self._periodo = periodo
+        self._profesor = profesor
+        self._asignatura = asignatura
+        self._detalleNota = []
+        self._fecha_creacion = date.today()
+        self._active = active
+
+    # ... (Propiedades para los atributos)
+
+    def add_detalle_nota(self, detalle_nota: DetalleNota):
+        """Agrega un detalle de nota a la lista.
+
+        Args:
+            detalle_nota: La instancia de DetalleNota a agregar.
+
+        Raises:
+            ValueError: Si el estudiante ya tiene una nota registrada para esta asignatura y periodo.
+        """
+        estudiante_id = detalle_nota.estudiante.id
+        if any(dn.estudiante.id == estudiante_id for dn in self._detalleNota):
+            raise ValueError("El estudiante ya tiene una nota registrada para esta asignatura y periodo.")
+        self._detalleNota.append(detalle_nota)
+
+    # ... (Otros métodos según sea necesario)

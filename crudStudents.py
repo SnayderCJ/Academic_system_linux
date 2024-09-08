@@ -1,29 +1,34 @@
 from Icrud import Icrud
 from clsJson import JsonFile
 from components import Valida
+from utilities import borrarPantalla, gotoxy
 
 class CrudStudents(Icrud):
     def __init__(self):
-        self.json_file = JsonFile('students.json')
+        self.json_file = JsonFile('data\students.json')
         self.valida = Valida()
 
     def create(self):
         """Crea un nuevo estudiante y lo guarda en el archivo JSON."""
+        borrarPantalla()  # Limpia la pantalla antes de mostrar el formulario de creación
+        gotoxy(0, 2)  # Posiciona el cursor en la fila 2, columna 0 (puedes ajustar estos valores)
+        print("---- Crear Estudiante ----")
+
         data = self.json_file.read()
         if data:
-            id = max([student['id'] for student in data]) + 1  # Asigna un nuevo ID incremental
+            id = max([student['id'] for student in data]) + 1 
         else:
             id = 1
 
         student = {
             'id': id,
             'nombre': self.valida.solo_letras("Ingrese el nombre del estudiante: ", "Nombre inválido. Solo se permiten letras."),
-            'edad': self.valida.solo_numeros("Ingrese la edad del estudiante: ", "Edad inválida. Ingrese un número entero positivo."),
+            'edad': self.valida.solo_numeros("Edad inválida. Ingrese un número entero positivo.", 20, 10),  # Utiliza gotoxy aquí si es necesario
             'grado': self.valida.solo_letras("Ingrese el grado del estudiante: ", "Grado inválido. Solo se permiten letras."),
             'escuela': input("Ingrese la escuela del estudiante: "),
             'promedio': self.valida.solo_decimales("Ingrese el promedio del estudiante: ", "Promedio inválido. Ingrese un número decimal positivo.")
         }
-        
+
         data.append(student)
         self.json_file.save(data)
         print("Estudiante creado exitosamente.")

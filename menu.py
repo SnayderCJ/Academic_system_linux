@@ -1,7 +1,9 @@
-from utilities import green_color, blue_color, purple_color, reset_color,red_color, borrarPantalla,linea, gotoxy
+from utilities import green_color, blue_color, purple_color, reset_color, red_color, borrarPantalla, linea, gotoxy
 from Icrud import Icrud
 from crudStudents import CrudStudents
 from crudTeacher import CrudTeacher
+from crudCourses import CrudCourses
+from crudGrades import CrudGrades 
 from clsJson import JsonFile
 from datetime import date
 from components import Valida, Menu
@@ -10,18 +12,17 @@ import os
 import time
 import platform
 
-
 opc = ''
 while opc != '6':
     borrarPantalla()
-    menu_main = Menu("Menu Sistema Académico", ["Estudiantes", "Profesores", "Cursos", "Matrículas", "Calificaciones", "Salir"])
+    menu_main = Menu("Menu Sistema Académico", ["1) Estudiantes", "2) Profesores", "3) Cursos", "4) Notas", "5) Salir"]) 
     opc = menu_main.menu()
-    
+
     if opc == '1':
         opc1 = ''
         while opc1 != '5':
             borrarPantalla()
-            menu_clients = Menu("Menu Estudiantes", ["Crear", "Actualizar", "Eliminar", "Consultar", "Salir"])
+            menu_students = Menu("Menu Estudiantes", ["1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
             opc1 = menu_students.menu()
             crud = CrudStudents()
             if opc1 == '1':
@@ -33,12 +34,12 @@ while opc != '6':
             elif opc1 == '4':
                 crud.consult()
             print("Regresando al menu principal")
-    
+
     elif opc == '2':
         opc2 = ''
         while opc2 != '5':
             borrarPantalla()
-            menu_teachers = Menu("Menu Profesores", ["Crear", "Actualizar", "Eliminar", "Consultar", "Salir"])
+            menu_teachers = Menu("Menu Profesores", ["1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
             opc2 = menu_teachers.menu()
             crud = CrudTeacher()
             if opc2 == '1':
@@ -50,14 +51,14 @@ while opc != '6':
             elif opc2 == '4':
                 crud.consult()
             print("Regresando al menu principal")
-    
+
     elif opc == '3':
         opc3 = ''
         while opc3 != '5':
             borrarPantalla()
-            menu_sales = Menu("Menu ventas", ["Crear", "Actualizar", "Eliminar", "Consultar", "Salir"])
-            opc3 = menu_sales.menu()
-            crud = CrudSales()
+            menu_courses = Menu("Menu Cursos", ["1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            opc3 = menu_courses.menu() 
+            crud = CrudCourses()
             if opc3 == '1':
                 crud.create()
             elif opc3 == '2':
@@ -66,14 +67,15 @@ while opc != '6':
                 crud.delete()
             elif opc3 == '4':
                 crud.consult()
-    
-    elif opc == '4':
+            print("Regresando al menu principal")
+
+    elif opc == '4': # Notas
         opc4 = ''
         while opc4 != '5':
             borrarPantalla()
-            menu_company = Menu("Menu compañía", ["Crear", "Actualizar", "Eliminar", "Consultar", "Salir"])
-            opc4 = menu_company.menu()
-            crud = CrudCompany()
+            menu_grades = Menu("Menu Calificaciones", ["1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            opc4 = menu_grades.menu() 
+            crud = CrudGrades() 
             if opc4 == '1':
                 crud.create()
             elif opc4 == '2':
@@ -82,9 +84,10 @@ while opc != '6':
                 crud.delete()
             elif opc4 == '4':
                 crud.consult()
-                print("Regresando al menu principal")
+            print("Regresando al menu principal")
 
-    print("Regresando al menu principal")
+    elif opc == '5':  # Opción para salir
+        break
 
 borrarPantalla()
 input("Presione una tecla para salir...")
