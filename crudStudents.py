@@ -1,18 +1,20 @@
 from Icrud import Icrud
 from clsJson import JsonFile
 from components import Valida
-from utilities import borrarPantalla, gotoxy
+from utilities import borrarPantalla, gotoxy, purple_color, red_color, blue_color, reset_color, linea, green_color
+from paths import path
 
 class CrudStudents(Icrud):
     def __init__(self):
-        self.json_file = JsonFile('data\students.json')
+        self.json_file = JsonFile(f"{path}/data/students.json") # Modifica la ruta del archivo JSON
         self.valida = Valida()
 
     def create(self):
         """Crea un nuevo estudiante y lo guarda en el archivo JSON."""
         borrarPantalla()  # Limpia la pantalla antes de mostrar el formulario de creación
-        gotoxy(0, 2)  # Posiciona el cursor en la fila 2, columna 0 (puedes ajustar estos valores)
-        print("---- Crear Estudiante ----")
+        linea(80,green_color)
+        print(f"{purple_color}{' Crear Estudiante '.center(80)}{reset_color}")
+        linea(80,green_color)
 
         data = self.json_file.read()
         if data:
@@ -20,12 +22,13 @@ class CrudStudents(Icrud):
         else:
             id = 1
 
+        
         student = {
             'id': id,
-            'nombre': self.valida.solo_letras("Ingrese el nombre del estudiante: ", "Nombre inválido. Solo se permiten letras."),
-            'edad': self.valida.solo_numeros("Edad inválida. Ingrese un número entero positivo.", 20, 10),  # Utiliza gotoxy aquí si es necesario
+            'nombre': self.valida.solo_letras(f"{purple_color}Ingrese el nombre del estudiante: {reset_color}", f"{red_color} Nombre inválido. Solo se permiten letras.{reset_color}"),
+            'edad': self.valida.solo_numeros('Ingrese la edad del estudiante: ', "Edad inválida. Ingrese un número entero positivo.", 0, 5),  # Utiliza gotoxy aquí si es necesario
             'grado': self.valida.solo_letras("Ingrese el grado del estudiante: ", "Grado inválido. Solo se permiten letras."),
-            'escuela': input("Ingrese la escuela del estudiante: "),
+            'escuela': input("          ------>   | Ingrese la escuela del estudiante: "),
             'promedio': self.valida.solo_decimales("Ingrese el promedio del estudiante: ", "Promedio inválido. Ingrese un número decimal positivo.")
         }
 
@@ -35,6 +38,8 @@ class CrudStudents(Icrud):
 
     def update(self):
         """Actualiza un estudiante existente en el archivo JSON."""
+        borrarPantalla()
+        gotoxy(0, 2)
         data = self.json_file.read()
         id = self.valida.solo_numeros("Ingrese el ID del estudiante a actualizar: ", "ID inválido. Ingrese un número entero positivo.")
         student = next((s for s in data if s['id'] == int(id)), None)
@@ -50,6 +55,8 @@ class CrudStudents(Icrud):
             print("Estudiante no encontrado.")
 
     def delete(self):
+        borrarPantalla()
+        gotoxy(0, 2)
         """Elimina un estudiante del archivo JSON."""
         data = self.json_file.read()
         id = self.valida.solo_numeros("Ingrese el ID del estudiante a eliminar: ", "ID inválido. Ingrese un número entero positivo.")
@@ -58,6 +65,8 @@ class CrudStudents(Icrud):
         print("Estudiante eliminado exitosamente.")
 
     def consult(self):
+        borrarPantalla()
+        gotoxy(0, 2)
         """Muestra la lista de estudiantes o busca uno específico."""
         data = self.json_file.read()
         if not data:

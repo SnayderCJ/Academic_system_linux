@@ -21,17 +21,17 @@ class Menu:
         return opc   
 
 class Valida:
-    def solo_numeros(self,mensajeError,col,fil):
+    def solo_numeros(self,mensaje, mensajeError,col,fil):
         while True: 
             gotoxy(col,fil)            
-            valor = input()
+            valor = input(f'          ------>   | {mensaje}')
             try:
                 if int(valor) > 0:
                     break
             except:
                 gotoxy(col,fil);print(mensajeError)
                 time.sleep(1)
-                gotoxy(col,fil);print(" "*20)
+                gotoxy(col,fil);print("-"*20)
         return valor
 
     def solo_letras(self,mensaje,mensajeError): 
@@ -41,6 +41,7 @@ class Valida:
                 break
             else:
                 print("          ------><  | {} ".format(mensajeError))
+                time.sleep(1)
         return valor
 
     def solo_decimales(self,mensaje,mensajeError):
@@ -52,6 +53,7 @@ class Valida:
                     break
             except:
                 print("          ------><  | {} ".format(mensajeError))
+                time.sleep(1)
         return valor
     
     def cedula(mensaje, col1, fil1, col2, fil2):
