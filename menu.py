@@ -39,7 +39,7 @@ while opc != '6':
         opc2 = ''
         while opc2 != '5':
             borrarPantalla()
-            menu_teachers = Menu("Menu Profesores", ["1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            menu_teachers = Menu("Menu Profesores", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
             opc2 = menu_teachers.menu()
             crud = CrudTeacher()
             if opc2 == '1':
@@ -56,7 +56,7 @@ while opc != '6':
         opc3 = ''
         while opc3 != '5':
             borrarPantalla()
-            menu_courses = Menu("Menu Cursos", ["1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            menu_courses = Menu("Menu Cursos", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
             opc3 = menu_courses.menu() 
             crud = CrudCourses()
             if opc3 == '1':

@@ -18,6 +18,11 @@ class Profesor:
         """Obtiene el nombre del profesor."""
         return self._nombre
     
+    @nombre.setter
+    def nombre(self, nuevo_nombre):
+        """Establece el nombre del profesor."""
+        self._nombre = nuevo_nombre # Actualiza el nombre del profesor.
+    
     @property
     def fecha_creacion(self):
         """Obtiene la fecha de creación del profesor."""
