@@ -1,5 +1,5 @@
 from utilities import borrarPantalla, gotoxy
-from utilities import blue_color, purple_color
+from utilities import blue_color, purple_color, reset_color, red_color, green_color
 import time
 
 class Menu:
@@ -22,16 +22,15 @@ class Menu:
 
 class Valida:
     def solo_numeros(self,mensaje, mensajeError,col,fil):
-        while True: 
-            gotoxy(col,fil)            
-            valor = input(f'          ------>   | {mensaje}')
+        while True:            
+            valor = input(f'          ------>   | {purple_color}{mensaje}{reset_color}')
             try:
                 if int(valor) > 0:
                     break
             except:
-                gotoxy(col,fil);print(mensajeError)
+                gotoxy(col,fil);print(f'{red_color}{mensajeError}{reset_color}')
                 time.sleep(1)
-                gotoxy(col,fil);print("-"*20)
+                gotoxy(col,fil);print(""*20)
         return valor
 
     def solo_letras(self,mensaje,mensajeError): 
@@ -40,28 +39,28 @@ class Valida:
             if valor.isalpha():
                 break
             else:
-                print("          ------><  | {} ".format(mensajeError))
+                gotoxy(60, 0)
+                print("          ------>   | {} ".format(mensajeError))
                 time.sleep(1)
+                gotoxy(60, 0)
+                
         return valor
 
     def solo_decimales(self,mensaje,mensajeError):
         while True:
-            valor = str(input("          ------>   | {} ".format(mensaje)))
+            valor = str(input(purple_color + "          ------>   | {} ".format(mensaje) + reset_color))
             try:
                 valor = float(valor)
                 if valor > float(0):
                     break
             except:
-                print("          ------><  | {} ".format(mensajeError))
+                print("          ------>   | {} ".format(mensajeError))
                 time.sleep(1)
         return valor
     
-    def cedula(mensaje, col1, fil1, col2, fil2):
+    def cedula(self, mensaje, col1, fil1):
         while True:
-            gotoxy(col1, fil1)
-            print(blue_color + f"{mensaje}")
-            gotoxy(col2, fil2)
-            cedula = input(purple_color)
+            cedula = input(f'          ------>   | {mensaje}')
             
             if len(cedula) == 10 and cedula.isdigit():
                 coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2]
@@ -80,12 +79,14 @@ class Valida:
                 
                 if total == int(cedula[9]):
                     return cedula
-            
-            gotoxy(col2, fil2)
-            print(purple_color + "El formato del DNI es incorrecto.")
+                
+            gotoxy(col1 + 60, fil1 - 1);
+            print(red_color + "El formato del DNI es incorrecto." + reset_color)
             time.sleep(1)
-            gotoxy(col2, fil2)
-            print(" "*60)
+            gotoxy(col1 + 60, fil1 - 1)  # Volver a la misma posición
+            print(" " * len("El formato del DNI es incorrecto."))  # Borrar el mensaje
+            
+            
 
     
 class otra:

@@ -1,8 +1,9 @@
 from Icrud import Icrud
 from clsJson import JsonFile
 from components import Valida
-from utilities import borrarPantalla, gotoxy, purple_color, red_color, blue_color, reset_color, linea, green_color
+from utilities import borrarPantalla, gotoxy, purple_color, red_color, blue_color, reset_color, linea, green_color, yellow_color
 from paths import path
+import time
 
 class CrudStudents(Icrud):
     def __init__(self):
@@ -17,64 +18,126 @@ class CrudStudents(Icrud):
         linea(80,green_color)
 
         data = self.json_file.read()
-        if data:
-            id = max([student['id'] for student in data]) + 1 
-        else:
-            id = 1
 
+        while True:  
+            cedula = self.valida.cedula(f"{purple_color}Ingrese la cédula del estudiante: {reset_color}", 0, 5)
+            if not any(s['cedula'] == cedula for s in data):  # Verificar si la cédula ya existe
+                break
+            else:
+                print(f"{red_color}Cédula ya registrada. Intente de nuevo.{reset_color}")
         
         student = {
-            'id': id,
+            'cedula': cedula,
             'nombre': self.valida.solo_letras(f"{purple_color}Ingrese el nombre del estudiante: {reset_color}", f"{red_color} Nombre inválido. Solo se permiten letras.{reset_color}"),
-            'edad': self.valida.solo_numeros('Ingrese la edad del estudiante: ', "Edad inválida. Ingrese un número entero positivo.", 0, 5),  # Utiliza gotoxy aquí si es necesario
-            'grado': self.valida.solo_letras("Ingrese el grado del estudiante: ", "Grado inválido. Solo se permiten letras."),
-            'escuela': input("          ------>   | Ingrese la escuela del estudiante: "),
-            'promedio': self.valida.solo_decimales("Ingrese el promedio del estudiante: ", "Promedio inválido. Ingrese un número decimal positivo.")
+            'apellido': self.valida.solo_letras(f"{purple_color}Ingrese el apellido del estudiante: {reset_color}", f"{red_color} Apellido inválido. Solo se permiten letras.{reset_color}"),
+            'edad': self.valida.solo_numeros(f'{purple_color}Ingrese la edad del estudiante: {reset_color}', f"{red_color}Edad inválida. Ingrese un número entero positivo. {reset_color}", 0, 7),  # Utiliza gotoxy aquí si es necesario
+            'grado': self.valida.solo_letras(f"{purple_color}Ingrese el grado del estudiante: {reset_color}", f"{red_color}Grado inválido. Solo se permiten letras.{reset_color}"),
+            'escuela': input(f"          ------>   | {purple_color}Ingrese la escuela del estudiante: {reset_color}"),
+            'promedio': self.valida.solo_decimales(f"{purple_color}Ingrese el promedio del estudiante: {reset_color}", f"{red_color}Promedio inválido. Ingrese un número decimal positivo.{reset_color}")
         }
 
         data.append(student)
         self.json_file.save(data)
-        print("Estudiante creado exitosamente.")
+        print(f"{green_color}{' Estudiante Creado Exitosamente... '.center(80)}{reset_color}")
+        time.sleep(2)
 
     def update(self):
         """Actualiza un estudiante existente en el archivo JSON."""
         borrarPantalla()
-        gotoxy(0, 2)
+        linea(80, green_color)
+        print(f"{purple_color}{' Actualizar Estudiante '.center(80)}{reset_color}")
+        linea(80, green_color)
+
         data = self.json_file.read()
-        id = self.valida.solo_numeros("Ingrese el ID del estudiante a actualizar: ", "ID inválido. Ingrese un número entero positivo.")
-        student = next((s for s in data if s['id'] == int(id)), None)
+
+        while True:  # Bucle para asegurar que se ingrese una cédula válida
+            cedula = self.valida.cedula(f"{purple_color}Ingrese la cédula del estudiante a actualizar: {reset_color}", 0, 5)
+            if cedula is not None:
+                break
+
+        student = next((s for s in data if s['cedula'] == cedula), None)
         if student:
-            student['nombre'] = self.valida.solo_letras("Ingrese el nuevo nombre del estudiante: ", "Nombre inválido. Solo se permiten letras.")
-            student['edad'] = self.valida.solo_numeros("Ingrese la nueva edad del estudiante: ", "Edad inválida. Ingrese un número entero positivo.")
-            student['grado'] = self.valida.solo_letras("Ingrese el nuevo grado del estudiante: ", "Grado inválido. Solo se permiten letras.")
-            student['escuela'] = input("Ingrese la nueva escuela del estudiante: ")
-            student['promedio'] = self.valida.solo_decimales("Ingrese el nuevo promedio del estudiante: ", "Promedio inválido. Ingrese un número decimal positivo.")
+            # Solicitar nuevo nombre, manteniendo el original si se presiona Enter
+            nuevo_nombre = input(f"          ------>   | {purple_color}Ingrese el nuevo nombre del estudiante (Enter para mantener {student['nombre']}): {reset_color}")
+            student['nombre'] = nuevo_nombre if nuevo_nombre else student['nombre']
+
+            # Solicitar nuevo apellido, manteniendo el original si se presiona Enter
+            nuevo_apellido = input(f"          ------>   | {purple_color}Ingrese el nuevo apellido del estudiante (Enter para mantener {student['apellido']}): {reset_color}")
+            student['apellido'] = nuevo_apellido if nuevo_apellido else student['apellido']
+
+            # Solicitar nueva edad, manteniendo la original si se presiona Enter
+            while True:
+                nueva_edad_input = input(f"          ------>   | {purple_color}Ingrese la nueva edad del estudiante (Enter para mantener {student['edad']}): {reset_color}")
+                if nueva_edad_input == "":
+                    break  # Mantener la edad original
+                try:
+                    nueva_edad = int(nueva_edad_input)
+                    if nueva_edad > 0:
+                        student['edad'] = nueva_edad
+                        break
+                    else:
+                        print(f"{red_color}Edad inválida. Ingrese un número entero positivo o Enter para mantener la edad actual.{reset_color}")
+                except ValueError:
+                    print(f"{red_color}Edad inválida. Ingrese un número entero positivo o Enter para mantener la edad actual.{reset_color}")
+
+            # Solicitar nuevo grado, manteniendo el original si se presiona Enter
+            nuevo_grado = input(f"          ------>   | {purple_color}Ingrese el nuevo grado del estudiante (Enter para mantener {student['grado']}): {reset_color}")
+            student['grado'] = nuevo_grado if nuevo_grado else student['grado']
+
+            # Solicitar nueva escuela, manteniendo la original si se presiona Enter
+            nueva_escuela = input(f"          ------>   | {purple_color}Ingrese la nueva escuela del estudiante (Enter para mantener {student['escuela']}): {reset_color}")
+            student['escuela'] = nueva_escuela if nueva_escuela else student['escuela']
+
+            # Solicitar nuevo promedio, manteniendo el original si se presiona Enter
+            while True:
+                nuevo_promedio_input = input(f"          ------>   | {purple_color}Ingrese el nuevo promedio del estudiante (Enter para mantener {student['promedio']}): {reset_color}")
+                if nuevo_promedio_input == "":
+                    break
+                try:
+                    nuevo_promedio = float(nuevo_promedio_input)
+                    if nuevo_promedio > 0:
+                        student['promedio'] = nuevo_promedio
+                        break
+                    else:
+                        print(f"{red_color}Promedio inválido. Ingrese un número decimal positivo o Enter para mantener el promedio actual.{reset_color}")
+                except ValueError:
+                    print(f"{red_color}Promedio inválido. Ingrese un número decimal positivo o Enter para mantener el promedio actual.{reset_color}")
+
             self.json_file.save(data)
-            print("Estudiante actualizado exitosamente.")
+            print()
+            print(f"{green_color}{' Estudiante actualizado exitosamente... '.center(80)}{reset_color}")
+            time.sleep(2)
         else:
-            print("Estudiante no encontrado.")
+            print(f"{red_color}{' Estudiante no encontrado. '.center(80)}{reset_color}")
+            time.sleep(2)
+
 
     def delete(self):
         borrarPantalla()
-        gotoxy(0, 2)
-        """Elimina un estudiante del archivo JSON."""
+        linea(80,green_color)
+        print(f"{purple_color}{' Eliminar Estudiante '.center(80)}{reset_color}")
+        linea(80,green_color)
+
         data = self.json_file.read()
-        id = self.valida.solo_numeros("Ingrese el ID del estudiante a eliminar: ", "ID inválido. Ingrese un número entero positivo.")
-        data = [s for s in data if s['id'] != int(id)]
+        id = self.valida.solo_numeros("Ingrese la cedula del estudiante a eliminar: ", "Cedula inválido. Ingrese un número entero positivo.", 0, 5)
+        data = [s for s in data if s['cedula'] != int(id)]
         self.json_file.save(data)
-        print("Estudiante eliminado exitosamente.")
+        print(f"{green_color}{' Estudiante eliminado exitosamente.... '.center(80)}{reset_color}")
 
     def consult(self):
         borrarPantalla()
-        gotoxy(0, 2)
+        linea(80, green_color)
+        print(f"{purple_color}{' Consultar Estudiante(s) '.center(80)}{reset_color}")
+        linea(80, green_color)
+        
         """Muestra la lista de estudiantes o busca uno específico."""
         data = self.json_file.read()
         if not data:
-            print("No hay estudiantes registrados.")
+            print(f"{yellow_color}{' No hay estudiantes registrados. '.center(80)}{reset_color}")
+            time.sleep(2)
             return
 
         while True:
-            print("\n--- Consultar Estudiantes ---")
             print("1. Listar todos los estudiantes")
             print("2. Buscar estudiante por ID")
             print("3. Volver")
@@ -82,16 +145,19 @@ class CrudStudents(Icrud):
             opcion = input("Seleccione una opción: ")
 
             if opcion == '1':
+                borrarPantalla()
                 for student in data:
-                    print(f"ID: {student['id']}, Nombre: {student['nombre']}, Edad: {student['edad']}, Grado: {student['grado']}, Escuela: {student['escuela']}, Promedio: {student['promedio']}")
+                    print(f"Cedula: {student['cedula']}, Nombre: {student['nombre']}, Edad: {student['edad']}, Grado: {student['grado']}, Escuela: {student['escuela']}, Promedio: {student['promedio']}")
             elif opcion == '2':
-                id = self.valida.solo_numeros("Ingrese el ID del estudiante a buscar: ", "ID inválido. Ingrese un número entero positivo.")
-                student = next((s for s in data if s['id'] == int(id)), None)
+                borrarPantalla()
+                cedula = self.valida.cedula(f"{purple_color}Ingrese el ID del estudiante a buscar: {reset_color}", 0, 5)
+                student = next((s for s in data if s['cedula'] == cedula), None)
                 if student:
-                    print(f"ID: {student['id']}, Nombre: {student['nombre']}, Edad: {student['edad']}, Grado: {student['grado']}, Escuela: {student['escuela']}, Promedio: {student['promedio']}")
+                    print(f"Cedula: {student['cedula']}, Nombre: {student['nombre']}, Edad: {student['edad']}, Grado: {student['grado']}, Escuela: {student['escuela']}, Promedio: {student['promedio']}")
                 else:
                     print("Estudiante no encontrado.")
             elif opcion == '3':
                 break
             else:
-                print("Opción inválida. Intente de nuevo.")
+                print(f"{red_color}{' Opción inválida. Intente de nuevo. '.center(80)}{reset_color}")
+                time.sleep(2)

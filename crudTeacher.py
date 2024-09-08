@@ -1,29 +1,33 @@
 from Icrud import Icrud
 from clsJson import JsonFile
 from components import Valida
+from paths import path
+from profesor import Profesor
+from utilities import borrarPantalla, gotoxy, purple_color, red_color, blue_color, reset_color, linea, green_color, yellow_color
 
 class CrudTeacher(Icrud):
     def __init__(self):
-        self.json_file = JsonFile('teachers.json')
+        self.json_file = JsonFile(f"{path}/data/teachers.json")
         self.valida = Valida()
 
     def create(self):
         """Crea un nuevo profesor y lo guarda en el archivo JSON."""
         data = self.json_file.read()
-        if data:
-            id = max([teacher['id'] for teacher in data]) + 1  # Asigna un nuevo ID incremental
+        # Convertir los datos del JSON a objetos Profesor
+        profesores = [Profesor(t['id'], t['nombre'], t.get('active', True)) for t in data]
+
+        if profesores:
+            id = max([teacher.id for teacher in profesores]) + 1
         else:
             id = 1
 
-        teacher = {
-            'id': id,
-            'nombre': self.valida.solo_letras("Ingrese el nombre del profesor: ", "Nombre inválido. Solo se permiten letras."),
-            # Puedes agregar más atributos relevantes para un profesor, como:
-            # 'especialidad': input("Ingrese la especialidad del profesor: "),
-            # 'fecha_contratacion': date.today().strftime('%Y-%m-%d'),  # Fecha actual en formato YYYY-MM-DD
-            # 'activo': True  # Puedes manejar el estado de actividad del profesor
-        }
-        data.append(teacher)
+        nombre = self.valida.solo_letras("Ingrese el nombre del profesor: ", "Nombre inválido. Solo se permiten letras.")
+
+        nuevo_profesor = Profesor(id, nombre, True)  # Crear un objeto Profesor
+        profesores.append(nuevo_profesor)
+
+        # Convertir los objetos Profesor de vuelta a diccionarios para guardarlos en el JSON
+        data = [profesor.__dict__ for profesor in profesores]
         self.json_file.save(data)
         print("Profesor creado exitosamente.")
 
