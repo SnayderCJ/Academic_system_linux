@@ -1,9 +1,9 @@
 [
   {
     "_id": 1,
-    "_periodo": "2024-2025",
-    "_profesor": "Snayder",
-    "_asignatura": "Calculo",
+    "_periodo": { "_id": 2 },
+    "_profesor": { "_cedula": "1308955937" },
+    "_asignatura": { "_id": 6 },
     "_detalleNota": [
       {
         "_id": null,
