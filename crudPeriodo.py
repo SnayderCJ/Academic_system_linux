@@ -8,7 +8,7 @@ import time
 
 class CrudPeriodo(Icrud):
     def __init__(self):
-        self.json_file = JsonFile(f'{path}/data/periodos.json')
+        self.json_file = JsonFile(f'{path}/data/periods.json')
         self.valida = Valida()
 
     def create(self):
@@ -19,8 +19,7 @@ class CrudPeriodo(Icrud):
         linea(80, green_color)
 
         data = self.json_file.read()
-        # Convertir los datos del JSON a objetos Periodo
-        periodos = [Periodo(p['id'], p['periodo'], p.get('active', True)) for p in data]
+        periodos = [Periodo(p['_id'], p['_periodo'], p['_active']) for p in data]
 
         if periodos:
             id = max([periodo.id for periodo in periodos]) + 1
@@ -35,10 +34,10 @@ class CrudPeriodo(Icrud):
         nuevo_periodo = Periodo(id, nombre_periodo, True)
         periodos.append(nuevo_periodo)
 
-        # Convertir los objetos Periodo de vuelta a diccionarios para guardarlos en el JSON
+        # Convertir los objetos Periodo a diccionarios para guardarlos en el JSON
         data = [periodo.__dict__ for periodo in periodos]
         self.json_file.save(data)
-        print("Periodo académico creado exitosamente.")
+        print(f"{green_color}{' Periodo académico creado exitosamente. '.center(80)}{reset_color}")
         time.sleep(2)
 
     def update(self):
@@ -49,23 +48,28 @@ class CrudPeriodo(Icrud):
         linea(80, green_color)
 
         data = self.json_file.read()
-        periodos = [Periodo(p['id'], p['periodo'], p.get('active', True)) for p in data]
+        periodos = [Periodo(p['_id'], p['_periodo'], p['_active']) for p in data]
 
         id = self.valida.solo_numeros("Ingrese el ID del periodo académico a actualizar: ", "ID inválido. Ingrese un número entero positivo.")
         periodo = next((p for p in periodos if p.id == int(id)), None)
 
         if periodo:
-            nuevo_nombre = input(f"Ingrese el nuevo nombre del periodo académico (actual: {periodo.periodo}): ")
+            nuevo_nombre = input(f"Ingrese el nuevo nombre del periodo académico (Enter para mantener '{periodo.periodo}'): ")
             if nuevo_nombre:
                 periodo.periodo = nuevo_nombre
 
             while True:
                 nuevo_estado = input(f"Ingrese el nuevo estado del periodo (activo/inactivo) (actual: {'activo' if periodo.active else 'inactivo'}): ")
                 if nuevo_estado.lower() in ['activo', 'inactivo']:
-                    periodo.active = (nuevo_estado.lower() == 'activo')
+                    if nuevo_estado.lower() == 'activo':
+                        periodo.activar()
+                    else:
+                        periodo.desactivar()
+                    break
+                elif nuevo_estado == "":  # Mantener el estado original
                     break
                 else:
-                    print("Estado inválido. Ingrese 'activo' o 'inactivo'.")
+                    print("Estado inválido. Ingrese 'activo' o 'inactivo' o presione Enter para mantener el estado actual.")
 
             # Convertir los objetos Periodo de vuelta a diccionarios para guardarlos en el JSON
             data = [periodo.__dict__ for periodo in periodos]
@@ -84,15 +88,30 @@ class CrudPeriodo(Icrud):
         linea(80, green_color)
 
         data = self.json_file.read()
-        periodos = [Periodo(p['id'], p['periodo'], p.get('active', True)) for p in data]
+        periodos = [Periodo(p['_id'], p['_periodo'], p['_active']) for p in data]
 
         id = self.valida.solo_numeros("Ingrese el ID del periodo académico a eliminar: ", "ID inválido. Ingrese un número entero positivo.")
-        periodos = [p for p in periodos if p.id != int(id)]
+        periodo_a_eliminar = next((p for p in periodos if p.id == int(id)), None)
 
-        # Convertir los objetos Periodo de vuelta a diccionarios para guardarlos en el JSON
-        data = [periodo.__dict__ for periodo in periodos]
-        self.json_file.save(data)
-        print("Periodo académico eliminado exitosamente.")
+        if periodo_a_eliminar:
+            # Mostrar los detalles del periodo antes de eliminarlo
+            print("\nDetalles del periodo a eliminar:")
+            print(f"ID: {periodo_a_eliminar.id}")
+            print(f"Nombre: {periodo_a_eliminar.periodo}")
+            print(f"Estado: {'Activo' if periodo_a_eliminar.active else 'Inactivo'}")
+
+            # Solicitar confirmación al usuario
+            confirmacion = input(f"{purple_color}\n¿Realmente desea eliminar este periodo académico? (s/n): {reset_color}")
+            if confirmacion.lower() == 's':
+                periodos = [p for p in periodos if p.id != int(id)]
+                data = [periodo.__dict__ for periodo in periodos]
+                self.json_file.save(data)
+                print(f"{green_color}{' Periodo académico eliminado exitosamente. '.center(80)}{reset_color}")
+            else:
+                print(f"{yellow_color}{' Eliminación cancelada. '.center(80)}{reset_color}")
+        else:
+            print(f"{red_color}{' Periodo académico no encontrado. '.center(80)}{reset_color}")
+
         time.sleep(2)
 
     def consult(self):
@@ -101,7 +120,7 @@ class CrudPeriodo(Icrud):
         gotoxy(0, 2)
 
         data = self.json_file.read()
-        periodos = [Periodo(p['id'], p['periodo'], p.get('active', True)) for p in data]
+        periodos = [Periodo(p['_id'], p['_periodo'], p['_active']) for p in data]
 
         if not periodos:
             print("No hay periodos académicos registrados.")

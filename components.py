@@ -35,19 +35,19 @@ class Valida:
                 gotoxy(col,fil);print(""*20)
         return valor
 
-    def solo_letras(self,mensaje,mensajeError): 
+    def solo_letras(self, mensaje, mensajeError):
         while True:
-            valor = str(input("          ------>   | {} ".format(mensaje)))
-            if valor.isalpha():
+            valor = str(input(f"          ------>   | {mensaje} "))
+            if all(c.isalpha() or c.isspace() or c.isdigit() or c in "-_" for c in valor):
                 break
             else:
                 gotoxy(60, 0)
-                print("          ------>   | {} ".format(mensajeError))
+                print(f"          ------>   | {mensajeError} ")
                 time.sleep(1)
                 gotoxy(60, 0)
-                
+                print(" " * 60)
         return valor
-
+    
     def solo_decimales(self,mensaje,mensajeError):
         while True:
             valor = str(input(purple_color + "          ------>   | {} ".format(mensaje) + reset_color))

@@ -12,12 +12,14 @@ class CrudLevel(Icrud):
         self.valida = Valida()
 
         self.niveles_predefinidos = [
-            "Primero de Secundaria",
-            "Segundo de Secundaria",
-            "Tercero de Secundaria",
-            "Cuarto de Secundaria",
-            "Quinto de Secundaria",
-            "Sexto de Secundaria"
+            "Primer Semestre",
+            "Segundo Semestre",
+            "Tercero Semestre",
+            "Cuarto Semestre",
+            "Quinto Semestre",
+            "Sexto Semestre",
+            "Séptimo Semestre",
+            "Octavo Semestre",
         ]
 
     def create(self):

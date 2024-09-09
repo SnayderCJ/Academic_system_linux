@@ -34,3 +34,11 @@ class Asignatura:
     def active(self):
         """Obtiene el estado de actividad de la asignatura."""
         return self._active
+    
+    def activar(self):
+        """Activa el nivel."""
+        self._active = True
+
+    def desactivar(self):
+        """Desactiva el nivel."""
+        self._active = False
