@@ -1,3 +1,5 @@
+from estudiante import Estudiante
+
 class DetalleNota:
     """Representa los detalles de una nota para un estudiante específico."""
 
@@ -36,7 +38,13 @@ class DetalleNota:
 
     def calcular_promedio(self):
         """Calcula el promedio de las notas, considerando la recuperación si existe."""
-        if self.recuperacion is not None:
-            return (self.nota1 + self.nota2 + self.recuperacion) / 3
+        if self.recuperacion is not None and self.recuperacion != 0:  
+            try:
+                recuperacion_float = float(self.recuperacion)
+                nota = self.nota1 + self.nota2
+                return (nota + recuperacion_float)/2
+            except ValueError:
+                print(f"Error: La nota de recuperación '{self.recuperacion}' no es un número válido.")
+                return None
         else:
-            return (self.nota1 + self.nota2) / 2
+            return self.nota1 + self.nota2

@@ -18,7 +18,6 @@ class Nota:
         self._active = active
 
     def add_detalle_nota(self, detalle_nota: DetalleNota):
-
         estudiante_id = detalle_nota.estudiante._cedula
         if any(dn.estudiante._cedula == estudiante_id for dn in self._detalleNota):
             raise ValueError("El estudiante ya tiene una nota registrada para esta asignatura y periodo.")

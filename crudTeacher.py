@@ -88,12 +88,30 @@ class CrudTeacher(Icrud):
             if cedula is not None:
                 break
 
-        profesores = [p for p in profesores if p.cedula != cedula]
+        # Buscar el profesor por cédula en la lista de objetos Profesor
+        profesor_a_eliminar = next((p for p in profesores if p.cedula == cedula), None)
 
-        # Convertir los objetos Profesor de vuelta a diccionarios para guardarlos en el JSON
-        data = [profesor.__dict__ for profesor in profesores]
-        self.json_file.save(data)
-        print(f"{green_color}{' Profesor eliminado exitosamente.'.center(80)}{reset_color}")
+        if profesor_a_eliminar:
+            # Mostrar los datos del profesor antes de eliminarlo
+            print("\nDatos del profesor a eliminar:")
+            print(f"Cédula: {profesor_a_eliminar.cedula}")
+            print(f"Nombre: {profesor_a_eliminar.nombre}")
+            print(f"Estado: {'Activo' if profesor_a_eliminar.active else 'Inactivo'}")
+
+            # Solicitar confirmación al usuario
+            confirmacion = input(f"{purple_color}\n¿Realmente desea eliminar este profesor? (s/n): {reset_color}")
+            if confirmacion.lower() == 's':
+                profesores.remove(profesor_a_eliminar)
+
+                # Convertir los objetos Profesor de vuelta a diccionarios para guardarlos en el JSON
+                data = [profesor.__dict__ for profesor in profesores]
+                self.json_file.save(data)
+                print(f"{green_color}{' Profesor eliminado exitosamente.'.center(80)}{reset_color}")
+            else:
+                print(f"{yellow_color}{' Eliminación cancelada. '.center(80)}{reset_color}")
+        else:
+            print(f"{red_color}{' Profesor no encontrado. '.center(80)}{reset_color}")
+
         time.sleep(2)
 
     def consult(self):

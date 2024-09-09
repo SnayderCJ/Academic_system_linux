@@ -95,9 +95,9 @@ class CrudGrades(Icrud):
                 estudiante = Estudiante(estudiante_data['_cedula'], estudiante_data['_nombre'], estudiante_data['_apellido'], estudiante_data['_fecha_nacimiento'], estudiante_data['_active'])
                 while True:
                     try:
-                        nota1 = self.valida.solo_decimales(f"Ingrese la primera nota para {estudiante._nombre}: ", "Nota inválida. Ingrese un número decimal positivo.")
-                        nota2 = self.valida.solo_decimales(f"Ingrese la segunda nota para {estudiante._nombre}: ", "Nota inválida. Ingrese un número decimal positivo.")
-                        recuperacion = input(f"Ingrese la nota de recuperación para {estudiante._nombre} (dejar en blanco si no aplica): ")
+                        nota1 = self.valida.valida_nota(f"Ingrese la primera nota para {estudiante._nombre}: ", "Nota inválida. Ingrese un número decimal positivo.")
+                        nota2 = self.valida.valida_nota(f"Ingrese la segunda nota para {estudiante._nombre}: ", "Nota inválida. Ingrese un número decimal positivo.")
+                        recuperacion = input(f"Ingrese la nota de recuperación para {estudiante._nombre} (dejar en blanco si no aplica): ") or 0
                         observacion = input(f"Ingrese una observación para {estudiante._nombre} (opcional): ")
 
                         detalle = DetalleNota(None, estudiante, float(nota1), float(nota2),
@@ -208,8 +208,8 @@ class CrudGrades(Icrud):
                     estudiante = Estudiante(estudiante_data['_cedula'], estudiante_data['_nombre'], estudiante_data['_apellido'], estudiante_data['_fecha_nacimiento'], estudiante_data['_active'])
                     while True:
                         try:
-                            nota1 = self.valida.solo_decimales(f"Ingrese la primera nota para {estudiante._nombre}: ", "Nota inválida. Ingrese un número decimal positivo.")
-                            nota2 = self.valida.solo_decimales(f"Ingrese la segunda nota para {estudiante._nombre}: ", "Nota inválida. Ingrese un número decimal positivo.")
+                            nota1 = self.valida.valida_nota(f"Ingrese la primera nota para {estudiante._nombre}: ", "Nota inválida. Ingrese un número decimal positivo.")
+                            nota2 = self.valida.valida_nota(f"Ingrese la segunda nota para {estudiante._nombre}: ", "Nota inválida. Ingrese un número decimal positivo.")
                             recuperacion = input(f"Ingrese la nota de recuperación para {estudiante._nombre} (dejar en blanco si no aplica): ")
                             observacion = input(f"Ingrese una observación para {estudiante._nombre} (opcional): ")
 
@@ -223,15 +223,14 @@ class CrudGrades(Icrud):
             # Actualizar el registro en grades_data
             for i, g in enumerate(grades_data):
                 if g['_id'] == nota_actualizada._id:
-                    grade_dict = {
-                        '_id': id,
-                        '_periodo_id': nota_actualizada._periodo,
-                        '_profesor_id': nota_actualizada._profesor,  # Asumiendo que el identificador del profesor es la cédula
-                        '_asignatura_id': nota_actualizada._asignatura,
-                        '_fecha_creacion': nota_actualizada._fecha_creacion.strftime('%Y-%m-%d'),  # Convertir la fecha a cadena
-                        '_active': nota_actualizada._active,
-                        '_detalleNota': [detalle.__dict__ for detalle in nota_actualizada._detalleNota]
-                    }
+                    # Convertir el objeto Nota a un diccionario, incluyendo los IDs de las entidades relacionadas
+                    grade_dict = nota_actualizada.__dict__
+                    grade_dict['_periodo_id'] = nota_actualizada._periodo  # Asignar el ID del periodo directamente
+                    grade_dict['_profesor_id'] = nota_actualizada._profesor  # Asignar la cédula del profesor directamente
+                    grade_dict['_asignatura_id'] = nota_actualizada._asignatura  # Asignar el ID de la asignatura directamente
+
+                    # Convertir los objetos DetalleNota dentro de _detalleNota a diccionarios
+                    grade_dict['_detalleNota'] = [detalle.__dict__ for detalle in nota_actualizada._detalleNota] 
 
                     grades_data[i] = grade_dict
                     break
@@ -280,7 +279,7 @@ class CrudGrades(Icrud):
         asignaturas_data = JsonFile(f'{path}/data/subjects.json').read()
 
         while True:
-            print(f"{cyan_color}1. Listar todos los registros de calificaciones")
+            print(f"{cyan_color}\n1. Listar todos los registros de calificaciones")
             print("2. Buscar registro por ID")
             print(f"3. Volver{reset_color}")
 
@@ -297,13 +296,22 @@ class CrudGrades(Icrud):
                         if estudiante_data:
                             nombre_estudiante = estudiante_data['_nombre'] + " " + estudiante_data['_apellido']
                         else:
-                             nombre_estudiante = "Estudiante no encontrado"
+                            nombre_estudiante = "Estudiante no encontrado"
 
-                        print(f"  - Estudiante: {nombre_estudiante}, Nota 1: {detalle['_nota1']}, Nota 2: {detalle['_nota2']}, Recuperación: {detalle.get('_recuperacion')}, Observación: {detalle.get('_observacion')}")
+                        # Calcular el promedio utilizando el método de DetalleNota
+                        detalle_nota_obj = DetalleNota(None, detalle['_estudiante']['_cedula'], detalle['_nota1'], detalle['_nota2'], detalle.get('_recuperacion'), detalle.get('_observacion'))
+                        promedio = detalle_nota_obj.calcular_promedio()
+                        if promedio is None:  # Verificar si hubo un error en el cálculo del promedio
+                            estado = "Error en el cálculo"
+                        else:
+                            estado = "Aprobado" if promedio >= 70 else "Reprobado"
+
+                        print(f"  - Estudiante: {nombre_estudiante}, Nota 1: {detalle['_nota1']}, Nota 2: {detalle['_nota2']}, Recuperación: {detalle.get('_recuperacion')}, Observación: {detalle.get('_observacion')}, Promedio: {promedio}, Estado: {estado}")
+
             elif opcion == '2':
                 borrarPantalla()
                 id = self.valida.solo_numeros("Ingrese el ID del registro a buscar: ", "ID inválido. Ingrese un número entero positivo.", 0, 5)
-                grade_dict = next((g for g in data if g['_id'] == id), None)
+                grade_dict = next((g for g in data if g['_id'] == int(id)), None)
                 if grade_dict:
                     print(f"\nID: {grade_dict['_id']}, Periodo: {grade_dict['_periodo_id']}, Profesor: {grade_dict['_profesor_id']}, Asignatura: {grade_dict['_asignatura_id']}")
                     for detalle in grade_dict['_detalleNota']:
@@ -314,7 +322,16 @@ class CrudGrades(Icrud):
                         else:
                              nombre_estudiante = "Estudiante no encontrado"
                         
-                        print(f"  - Estudiante: {nombre_estudiante}, Nota 1: {detalle['_nota1']}, Nota 2: {detalle['_nota2']}, Recuperación: {detalle.get('_recuperacion')}, Observación: {detalle.get('_observacion')}")
+                        # Calcular el promedio utilizando el método de DetalleNota
+                        detalle_nota_obj = DetalleNota(None, detalle['_estudiante']['_cedula'], detalle['_nota1'], detalle['_nota2'], detalle.get('_recuperacion'), detalle.get('_observacion'))
+                        promedio = detalle_nota_obj.calcular_promedio()
+                        if promedio is None:  # Verificar si hubo un error en el cálculo del promedio
+                            estado = "Error en el cálculo"
+                        else:
+                            estado = "Aprobado" if promedio >= 70 else "Reprobado"
+
+                        print(f"  - Estudiante: {nombre_estudiante}, Nota 1: {detalle['_nota1']}, Nota 2: {detalle['_nota2']}, Recuperación: {detalle.get('_recuperacion')}, Observación: {detalle.get('_observacion')}, Promedio: {promedio}, Estado: {estado}")
+
                 else:
                     print(f"{red_color}{' Registro de notas no encontrado. '.center(80)}{reset_color}")
                     time.sleep(2)
@@ -324,7 +341,6 @@ class CrudGrades(Icrud):
             else:
                 print(f"{red_color}{' Opción inválida. Intente de nuevo. '.center(80)}{reset_color}")
                 time.sleep(2)
-
 
 
 

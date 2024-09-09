@@ -148,8 +148,7 @@ class CrudStudents(Icrud):
                                           student_data['_active'])
                     
                     # Usar las propiedades del objeto Estudiante para mostrar la información
-                    print(f"Cédula: {estudiante._cedula}, Nombre: {estudiante._nombre}, Apellido: {estudiante._apellido}, "
-                          f"Fecha de Nacimiento: {estudiante._fecha_nacimiento}")
+                    print(f"Cédula: {estudiante._cedula}, Nombre: {estudiante._nombre}, Apellido: {estudiante._apellido}, ")
             elif opcion == '2':
                 borrarPantalla()
                 while True:
@@ -167,7 +166,7 @@ class CrudStudents(Icrud):
                     # Usar las propiedades del objeto Estudiante para mostrar la información
                     print(f"Cédula: {estudiante._cedula}, Nombre: {estudiante.nombre}, Apellido: {estudiante._apellido}, ")
                 else:
-                    print(f"{red_color}{' Estudiante no encontrado. '.center(80)}{reset_color}")
+                    print(f"{yellow_color}{' Estudiante no encontrado. '.center(80)}{reset_color}")
                     time.sleep(2)
             elif opcion == '3':
                 break

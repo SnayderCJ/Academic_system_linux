@@ -87,6 +87,19 @@ class Valida:
             time.sleep(1)
             gotoxy(col1 + 60, fil1 - 1)  # Volver a la misma posición
             print(" " * len("El formato del DNI es incorrecto."))  # Borrar el mensaje
+
+    def valida_nota(self, mensaje, mensaje_error):
+        while True:
+            try:
+                nota = float(input(f"          ------>   | {purple_color}{mensaje}{reset_color} "))
+                if 0 <= nota <= 50:
+                    return nota
+                else:
+                    print(f"          ------>   | {red_color}{mensaje_error}{reset_color} ")
+                    time.sleep(1)
+            except ValueError:
+                print(f"          ------>   | {red_color}Error: Ingrese un número decimal válido.{reset_color} ")
+                time.sleep(1)
             
             
 

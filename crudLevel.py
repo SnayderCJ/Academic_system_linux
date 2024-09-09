@@ -77,41 +77,41 @@ class CrudLevel(Icrud):
 
     def update(self):
         """Actualiza un nivel educativo existente en el archivo JSON."""
-        # borrarPantalla()
-        # linea(80, green_color)
-        # print(f"{purple_color}{' Actualizar Nivel Educativo '.center(80)}{reset_color}")
-        # linea(80, green_color)
+        borrarPantalla()
+        linea(80, green_color)
+        print(f"{purple_color}{' Actualizar Nivel Educativo '.center(80)}{reset_color}")
+        linea(80, green_color)
 
-        # data = self.json_file.read()
-        # niveles = [Nivel(n['_id'], n['_nivel']) for n in data] 
+        data = self.json_file.read()
+        niveles = [Nivel(n['_id'], n['_nivel']) for n in data] 
 
-        # id = self.valida.solo_numeros("Ingrese el ID del nivel educativo a actualizar: ", "ID inválido. Ingrese un número entero positivo.", 0, 5)
-        # nivel = next((n for n in niveles if n.id == int(id)), None)
+        id = self.valida.solo_numeros("Ingrese el ID del nivel educativo a actualizar: ", "ID inválido. Ingrese un número entero positivo.", 0, 5)
+        nivel = next((n for n in niveles if n.id == int(id)), None)
 
-        # if nivel:
-        #     nivel._nivel = self.valida.solo_letras("Ingrese el nuevo nombre del nivel educativo: ", "Nombre inválido. Solo se permiten letras.")
+        if nivel:
+            nivel._nivel = self.valida.solo_letras("Ingrese el nuevo nombre del nivel educativo: ", "Nombre inválido. Solo se permiten letras.")
 
-        #     while True:
-        #         nuevo_estado = input(f"{purple_color}Ingrese el nuevo estado del nivel (activo/inactivo) (actual: {'activo' if nivel.active else 'inactivo'}): {reset_color}")
-        #         if nuevo_estado.lower() in ['activo', 'inactivo']:
-        #             if nuevo_estado.lower() == 'activo':
-        #                 nivel.activar() 
-        #             else:
-        #                 nivel.desactivar() 
-        #             break
-        #         else:
-        #             mensaje = f"{purple_color} Estado inválido. Ingrese 'activo' o 'inactivo'. {reset_color}"
-        #             print(mensaje.center(80)) 
+            while True:
+                nuevo_estado = input(f"{purple_color}Ingrese el nuevo estado del nivel (activo/inactivo) (actual: {'activo' if nivel.active else 'inactivo'}): {reset_color}")
+                if nuevo_estado.lower() in ['activo', 'inactivo']:
+                    if nuevo_estado.lower() == 'activo':
+                        nivel.activar() 
+                    else:
+                        nivel.desactivar() 
+                    break
+                else:
+                    mensaje = f"{purple_color} Estado inválido. Ingrese 'activo' o 'inactivo'. {reset_color}"
+                    print(mensaje.center(80)) 
                     
 
-        #     data = [nivel.__dict__ for nivel in niveles]
-        #     self.json_file.save(data)
-        #     print("Nivel educativo actualizado exitosamente.")
-        #     time.sleep(2)
-        # else:
-        #     print("Nivel educativo no encontrado.")
-        #     time.sleep(2)
-        pass
+            data = [nivel.__dict__ for nivel in niveles]
+            self.json_file.save(data)
+            print("Nivel educativo actualizado exitosamente.")
+            time.sleep(2)
+        else:
+            print("Nivel educativo no encontrado.")
+            time.sleep(2)
+        
 
     def delete(self):
         """Elimina un nivel educativo del archivo JSON."""
