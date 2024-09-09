@@ -1,29 +1,18 @@
 [
   {
-    "cedula": "0944104942",
-    "nombre": "Snayder",
-    "apellido": "Cedeno",
-    "edad": "20",
-    "grado": "sexto",
-    "escuela": "Juan Montalvo",
-    "promedio": 100.0
+    "_cedula": "0944104942",
+    "_nombre": "Snayder",
+    "_apellido": "Cedeno",
+    "_fecha_nacimiento": "2004-05-28",
+    "_fecha_creacion": "2024-09-08",
+    "_active": true
   },
   {
-    "cedula": "1308955937",
-    "nombre": "Isabel",
-    "apellido": "Jimenez",
-    "edad": 39,
-    "grado": "Decimo",
-    "escuela": "UG",
-    "promedio": 100.0
-  },
-  {
-    "cedula": "0951817857",
-    "nombre": "Frank",
-    "apellido": "Borja",
-    "edad": "22",
-    "grado": "Sexto",
-    "escuela": "Pedro Gilber",
-    "promedio": 100.0
+    "_cedula": "1308955937",
+    "_nombre": "Isabel",
+    "_apellido": "Jimenez",
+    "_fecha_nacimiento": "1987-12-11",
+    "_fecha_creacion": "2024-09-08",
+    "_active": true
   }
 ]

@@ -2,8 +2,10 @@ from utilities import green_color, blue_color, purple_color, reset_color, red_co
 from Icrud import Icrud
 from crudStudents import CrudStudents
 from crudTeacher import CrudTeacher
-from crudCourses import CrudCourses
-from crudGrades import CrudGrades 
+from crudLevel import CrudLevel
+from crudSubjects import CrudSubjects
+from crudGrades import CrudGrades
+from crudPeriodo import CrudPeriodo
 from clsJson import JsonFile
 from datetime import date
 from components import Valida, Menu
@@ -13,9 +15,17 @@ import time
 import platform
 
 opc = ''
-while opc != '6':
+while opc != '7':
     borrarPantalla()
-    menu_main = Menu(f"{purple_color}Menu Sistema Académico", [f"{cyan_color}1) Estudiantes", "2) Profesores", "3) Cursos", "4) Notas", "5) Salir"]) 
+    menu_main = Menu(f"{purple_color}Menu Sistema Académico", [
+        f"{cyan_color}1) Estudiantes", 
+        "2) Profesores", 
+        "3) Asignaturas", 
+        "4) Niveles", 
+        "5) Periodos",
+        "6) Notas", 
+        "7) Salir"
+    ]) 
     opc = menu_main.menu()
 
     if opc == '1':
@@ -52,13 +62,13 @@ while opc != '6':
                 crud.consult()
             print("Regresando al menu principal")
 
-    elif opc == '3':
+    elif opc == '3':  # Menú de Asignaturas
         opc3 = ''
         while opc3 != '5':
             borrarPantalla()
-            menu_courses = Menu("Menu Cursos", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
-            opc3 = menu_courses.menu() 
-            crud = CrudCourses()
+            menu_subjects = Menu("Menu Asignaturas", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            opc3 = menu_subjects.menu() 
+            crud = CrudSubjects()
             if opc3 == '1':
                 crud.create()
             elif opc3 == '2':
@@ -69,13 +79,13 @@ while opc != '6':
                 crud.consult()
             print("Regresando al menu principal")
 
-    elif opc == '4': # Notas
+    elif opc == '4':  # Menú de Niveles
         opc4 = ''
         while opc4 != '5':
             borrarPantalla()
-            menu_grades = Menu("Menu Calificaciones", ["1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
-            opc4 = menu_grades.menu() 
-            crud = CrudGrades() 
+            menu_levels = Menu("Menu Niveles", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            opc4 = menu_levels.menu() 
+            crud = CrudLevel()  
             if opc4 == '1':
                 crud.create()
             elif opc4 == '2':
@@ -86,7 +96,42 @@ while opc != '6':
                 crud.consult()
             print("Regresando al menu principal")
 
-    elif opc == '5':  # Opción para salir
+    elif opc == '5':  # Menú de Periodos
+        opc5 = ''
+        while opc5 != '5':
+            borrarPantalla()
+            menu_grades = Menu("Menu Periodo", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            opc5 = menu_periodos.menu() 
+            crud = CrudPeriodo()
+            if opc5 == '1':
+                crud.create()
+            elif opc5 == '2':
+                crud.update()
+            elif opc5 == '3':
+                crud.delete()
+            elif opc5 == '4':
+                crud.consult()
+            print("Regresando al menu principal")
+
+    elif opc == '6':  # Menú de Notas
+        opc5 = ''
+        while opc5 != '5':
+            borrarPantalla()
+            menu_grades = Menu("Menu Notas", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            opc5 = menu_grades.menu() 
+            crud = CrudGrades()
+            if opc5 == '1':
+                crud.create()
+            elif opc5 == '2':
+                crud.update()
+            elif opc5 == '3':
+                crud.delete()
+            elif opc5 == '4':
+                crud.consult()
+            print("Regresando al menu principal")
+
+
+    elif opc == '7':  # Opción para salir
         break
 
 borrarPantalla()

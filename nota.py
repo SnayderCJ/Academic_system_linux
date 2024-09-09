@@ -1,5 +1,9 @@
 from datetime import date
 from detalleNota import DetalleNota
+from datetime import date
+from periodo import Periodo
+from profesor import Profesor
+from asignatura import Asignatura
 
 class Nota:
     """Representa una nota asociada a un periodo, profesor y asignatura."""
@@ -16,14 +20,7 @@ class Nota:
     # ... (Propiedades para los atributos)
 
     def add_detalle_nota(self, detalle_nota: DetalleNota):
-        """Agrega un detalle de nota a la lista.
-
-        Args:
-            detalle_nota: La instancia de DetalleNota a agregar.
-
-        Raises:
-            ValueError: Si el estudiante ya tiene una nota registrada para esta asignatura y periodo.
-        """
+        
         estudiante_id = detalle_nota.estudiante.id
         if any(dn.estudiante.id == estudiante_id for dn in self._detalleNota):
             raise ValueError("El estudiante ya tiene una nota registrada para esta asignatura y periodo.")

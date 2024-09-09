@@ -3,12 +3,12 @@ from datetime import date
 class Estudiante:
     """Representa a un estudiante en el sistema académico."""
 
-    def __init__(self, id, nombre, apellido, fecha_nacimiento, active=True):
-        self._id = id
+    def __init__(self, cedula, nombre, apellido, fecha_nacimiento, active=True):
+        self._cedula = cedula
         self._nombre = nombre
         self._apellido = apellido
         self._fecha_nacimiento = fecha_nacimiento
-        self.fecha_creacion = date.today().strftime('%Y-%m-%d')
+        self._fecha_creacion = date.today()
         self._active = active
 
     @property
@@ -41,9 +41,3 @@ class Estudiante:
         """Obtiene el estado de actividad del estudiante."""
         return self._active
     
-
-    def calcular_edad(self):
-        """Calcula la edad del estudiante a partir de su fecha de nacimiento."""
-        hoy = date.today()
-        edad = hoy.year - self._fecha_nacimiento.year - ((hoy.month, hoy.day) < (self._fecha_nacimiento.month, self._fecha_nacimiento.day))
-        return edad
