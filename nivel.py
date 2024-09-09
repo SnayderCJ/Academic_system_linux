@@ -6,7 +6,7 @@ class Nivel:
     def __init__(self, id, nivel):
         self._id = id
         self._nivel = nivel
-        self._fecha_creacion = date.today()
+        self._fecha_creacion = date.today().strftime('%Y-%m-%d')
         self._active = True
 
     @property

@@ -11,7 +11,7 @@ class Menu:
         self.fil=fil
         
     def menu(self):
-        linea(80,green_color); print(f'{self.titulo}'.center(80)); linea(80,green_color)
+        linea(80,green_color); print(f'{purple_color}{self.titulo}{reset_color}'.center(80)); linea(80,green_color)
         self.col-=5
         for opcion in self.opciones:
             self.fil +=1
