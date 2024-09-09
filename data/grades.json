@@ -1,9 +1,11 @@
 [
   {
-    "_id": 1,
-    "_periodo": { "_id": 2 },
-    "_profesor": { "_cedula": "1308955937" },
-    "_asignatura": { "_id": 6 },
+    "_id": "1",
+    "_periodo_id": "2023-2024",
+    "_profesor_id": "Martha",
+    "_asignatura_id": "Algoritmo y logica de Programacion",
+    "_fecha_creacion": "2024-09-09",
+    "_active": true,
     "_detalleNota": [
       {
         "_id": null,
@@ -50,8 +52,61 @@
         "_recuperacion": null,
         "_observacion": ""
       }
-    ],
+    ]
+  },
+  {
+    "_id": 2,
+    "_periodo_id": "2024-2025",
+    "_profesor_id": "Snayder",
+    "_asignatura_id": "Introduccion a la ING de Software",
     "_fecha_creacion": "2024-09-09",
-    "_active": true
+    "_active": true,
+    "_detalleNota": [
+      {
+        "_id": null,
+        "_estudiante": {
+          "_cedula": "0944104942",
+          "_nombre": "Snayder",
+          "_apellido": "Cedeno",
+          "_fecha_nacimiento": "2004-05-28",
+          "_fecha_creacion": "2024-09-09",
+          "_active": true
+        },
+        "_nota1": 50.0,
+        "_nota2": 40.0,
+        "_recuperacion": null,
+        "_observacion": ""
+      },
+      {
+        "_id": null,
+        "_estudiante": {
+          "_cedula": "1308955937",
+          "_nombre": "Isabel",
+          "_apellido": "Jimenez",
+          "_fecha_nacimiento": "1987-12-11",
+          "_fecha_creacion": "2024-09-09",
+          "_active": true
+        },
+        "_nota1": 50.0,
+        "_nota2": 40.0,
+        "_recuperacion": null,
+        "_observacion": ""
+      },
+      {
+        "_id": null,
+        "_estudiante": {
+          "_cedula": "0951817857",
+          "_nombre": "Frank",
+          "_apellido": "Borja",
+          "_fecha_nacimiento": "2002-10-30",
+          "_fecha_creacion": "2024-09-09",
+          "_active": true
+        },
+        "_nota1": 40.0,
+        "_nota2": 40.0,
+        "_recuperacion": null,
+        "_observacion": ""
+      }
+    ]
   }
 ]

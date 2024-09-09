@@ -1,1 +1,20 @@
-[{"_id": 2, "_periodo": "2023-2024", "_fecha_creacion": "2024-09-08", "_active": true}, {"_id": 3, "_periodo": "2024-2025", "_fecha_creacion": "2024-09-08", "_active": true}, {"_id": 4, "_periodo": "2022-2023", "_fecha_creacion": "2024-09-08", "_active": true}]
+[
+  {
+    "_id": 2,
+    "_periodo": "2023-2024",
+    "_fecha_creacion": "2024-09-08",
+    "_active": true
+  },
+  {
+    "_id": 3,
+    "_periodo": "2024-2025",
+    "_fecha_creacion": "2024-09-08",
+    "_active": true
+  },
+  {
+    "_id": 4,
+    "_periodo": "2022-2023",
+    "_fecha_creacion": "2024-09-08",
+    "_active": true
+  }
+]

@@ -85,9 +85,9 @@ class CrudGrades(Icrud):
         
         # Crear la instancia de Nota, almacenando solo los IDs
         nueva_nota = Nota(id, 
-                        periodo_seleccionado['_id'], 
-                        profesor_seleccionado['_cedula'],
-                        asignatura_seleccionada['_id']
+                        periodo_seleccionado['_periodo'], 
+                        profesor_seleccionado['_nombre'],
+                        asignatura_seleccionada['_descripcion']
                         )
 
         for estudiante_data in estudiantes_data:
@@ -108,11 +108,16 @@ class CrudGrades(Icrud):
                     except ValueError as e:
                         print(f"Error: {e}")
 
-         # Convertir el objeto Nota a un diccionario, incluyendo los IDs de las entidades relacionadas
-        grade_dict = nueva_nota.__dict__
-        grade_dict['_periodo'] = {'_id': nueva_nota._periodo}
-        grade_dict['_profesor'] = {'_cedula': nueva_nota._profesor}
-        grade_dict['_asignatura'] = {'_id': nueva_nota._asignatura}
+
+        grade_dict = {
+            '_id': id,
+            '_periodo_id': nueva_nota._periodo,
+            '_profesor_id': nueva_nota._profesor,  # Asumiendo que el identificador del profesor es la cédula
+            '_asignatura_id': nueva_nota._asignatura,
+            '_fecha_creacion': nueva_nota._fecha_creacion.strftime('%Y-%m-%d'),  # Convertir la fecha a cadena
+            '_active': nueva_nota._active,
+            '_detalleNota': [detalle.__dict__ for detalle in nueva_nota._detalleNota]
+}
 
         # Convertir los objetos DetalleNota dentro de _detalleNota a diccionarios
         grade_dict['_detalleNota'] = [detalle.__dict__ for detalle in nueva_nota._detalleNota] 
@@ -141,6 +146,7 @@ class CrudGrades(Icrud):
 
 
             # Mostrar periodos disponibles (solo los activos)
+            borrarPantalla()
             print(f"{cyan_color}\nPeriodos disponibles:{reset_color}")
             for periodo in periodos_data:
                 if periodo.get('_active'):
@@ -155,6 +161,7 @@ class CrudGrades(Icrud):
                     print(f"{yellow_color}{' Periodo no encontrado o inactivo. Intente de nuevo. '.center(80)}{reset_color}")
 
             # Mostrar profesores disponibles (solo los activos)
+            borrarPantalla()
             print(f"{cyan_color}\nProfesores disponibles:{reset_color}")
             for profesor in profesores_data:
                 if profesor.get('_active'):
@@ -169,6 +176,7 @@ class CrudGrades(Icrud):
                     print(f"{yellow_color}{' Profesor no encontrado o inactivo. Intente de nuevo. '.center(80)}{reset_color}")
 
             # Mostrar asignaturas disponibles (solo las activas)
+            borrarPantalla()
             print(f"{cyan_color}\nAsignaturas disponibles:{reset_color}")
             for asignatura in asignaturas_data:
                 if asignatura.get('_active'):
@@ -186,10 +194,10 @@ class CrudGrades(Icrud):
             estudiantes_data = JsonFile(f'{path}/data/students.json').read()
 
             # Actualizar la instancia de Nota, almacenando solo los IDs
-            nota_actualizada = Nota(grade_dict['id'], 
-                            periodo_seleccionado['_id'], 
-                            profesor_seleccionado['_cedula'],
-                            asignatura_seleccionada['_id']
+            nota_actualizada = Nota(grade_dict['_id'], 
+                            periodo_seleccionado['_periodo'], 
+                            profesor_seleccionado['_nombre'],
+                            asignatura_seleccionada['_descripcion']
                             )
 
             # Limpiar los detalles de la nota anterior
@@ -205,7 +213,7 @@ class CrudGrades(Icrud):
                             recuperacion = input(f"Ingrese la nota de recuperación para {estudiante._nombre} (dejar en blanco si no aplica): ")
                             observacion = input(f"Ingrese una observación para {estudiante._nombre} (opcional): ")
 
-                            detalle = DetalleNota(None, estudiante.cedula, float(nota1), float(nota2),
+                            detalle = DetalleNota(None, estudiante, float(nota1), float(nota2),
                                                   float(recuperacion) if recuperacion else None, observacion)
                             nota_actualizada.add_detalle_nota(detalle) 
                             break
@@ -214,15 +222,16 @@ class CrudGrades(Icrud):
 
             # Actualizar el registro en grades_data
             for i, g in enumerate(grades_data):
-                if g['id'] == nota_actualizada.id:
-                    # Convertir el objeto Nota a un diccionario, incluyendo los IDs de las entidades relacionadas
-                    grade_dict = nota_actualizada.__dict__
-                    grade_dict['_periodo'] = {'_id': nota_actualizada.periodo}
-                    grade_dict['_profesor'] = {'_cedula': nota_actualizada.profesor}
-                    grade_dict['_asignatura'] = {'_id': nota_actualizada.asignatura}
-
-                    # Convertir los objetos DetalleNota dentro de _detalleNota a diccionarios
-                    grade_dict['_detalleNota'] = [detalle.__dict__ for detalle in nota_actualizada._detalleNota] 
+                if g['_id'] == nota_actualizada._id:
+                    grade_dict = {
+                        '_id': id,
+                        '_periodo_id': nota_actualizada._periodo,
+                        '_profesor_id': nota_actualizada._profesor,  # Asumiendo que el identificador del profesor es la cédula
+                        '_asignatura_id': nota_actualizada._asignatura,
+                        '_fecha_creacion': nota_actualizada._fecha_creacion.strftime('%Y-%m-%d'),  # Convertir la fecha a cadena
+                        '_active': nota_actualizada._active,
+                        '_detalleNota': [detalle.__dict__ for detalle in nota_actualizada._detalleNota]
+                    }
 
                     grades_data[i] = grade_dict
                     break
@@ -243,85 +252,79 @@ class CrudGrades(Icrud):
 
         data = self.json_file.read()
 
-        id = self.valida.solo_numeros("Ingrese el ID del registro de calificaciones a eliminar: ", "ID inválido. Ingrese un número entero positivo.")
-        registro_a_eliminar = next((g for g in data if g['id'] == int(id)), None)
+        id = self.valida.solo_numeros("Ingrese el ID del registro de calificaciones a eliminar: ", "ID inválido. Ingrese un número entero positivo.", 0, 5)
 
-        if registro_a_eliminar:
-            # Convertir el diccionario a un objeto Nota para acceder a los atributos de forma más clara
-            periodo = Periodo(registro_a_eliminar['_periodo']['id'], registro_a_eliminar['_periodo']['periodo'], registro_a_eliminar['_periodo']['active'])
-            profesor = Profesor(registro_a_eliminar['_profesor']['cedula'], registro_a_eliminar['_profesor']['nombre'], registro_a_eliminar['_profesor']['active'])
-            asignatura = Asignatura(registro_a_eliminar['_asignatura']['id'], registro_a_eliminar['_asignatura']['descripcion'], registro_a_eliminar['_asignatura']['nivel'], registro_a_eliminar['_asignatura']['active'])
-            detalles_nota = [DetalleNota(None, Estudiante(d['estudiante']['cedula'], d['estudiante']['nombre'], d['estudiante']['apellido'], d['estudiante']['_fecha_nacimiento'], d['estudiante']['_active']), d['nota1'], d['nota2'], d.get('recuperacion'), d.get('observacion')) for d in registro_a_eliminar['detalles']]
-            nota = Nota(registro_a_eliminar['id'], periodo, profesor, asignatura, registro_a_eliminar['active'])
-            nota._detalleNota = detalles_nota
+        # Buscar y eliminar el registro por ID
+        data = [g for g in data if g['_id'] != int(id)]
 
-            # Mostrar los detalles del registro antes de eliminarlo
-            print("\nDetalles del registro a eliminar:")
-            print(f"ID: {nota.id}")
-            print(f"Periodo: {nota.periodo.periodo}")
-            print(f"Profesor: {nota.profesor.nombre}")
-            print(f"Asignatura: {nota.asignatura.descripcion}")
-            for detalle in nota.detalleNota:
-                print(f"  - Estudiante: {detalle.estudiante.nombre} {detalle.estudiante.apellido}, Nota 1: {detalle.nota1}, Nota 2: {detalle.nota2}, Recuperación: {detalle.recuperacion}, Observación: {detalle.observacion}")
-
-            # Solicitar confirmación al usuario
-            confirmacion = input(f"{purple_color}\n¿Realmente desea eliminar este registro de notas? (s/n): {reset_color}")
-            if confirmacion.lower() == 's':
-                data = [g for g in data if g['id'] != int(id)]
-                self.json_file.save(data)
-                print(f"{green_color}{' Registro de notas eliminado exitosamente. '.center(80)}{reset_color}")
-            else:
-                print(f"{yellow_color}{' Eliminación cancelada. '.center(80)}{reset_color}")
-        else:
-            print(f"{red_color}{' Registro de notas no encontrado. '.center(80)}{reset_color}")
-
+        self.json_file.save(data)
+        print(f"{green_color}{' Registro de notas eliminado exitosamente. '.center(80)}{reset_color}")
         time.sleep(2)
+
 
     def consult(self):
         """Muestra la lista de registros de calificaciones o busca uno específico."""
         borrarPantalla()
-        gotoxy(0, 2)
+        linea(80, green_color)
+        print(f"{purple_color}{' Consultar Registro de Notas '.center(80)}{reset_color}")
+        linea(80, green_color)
 
         data = self.json_file.read()
         if not data:
             print("No hay registros de calificaciones.")
             return
 
-        while True:
-            print("\n--- Consultar Calificaciones ---")
-            print("1. Listar todos los registros de calificaciones")
-            print("2. Buscar registro por ID")
-            print("3. Volver")
+        # Obtener datos de periodos, profesores y asignaturas para mostrar nombres en lugar de IDs
+        periodos_data = JsonFile(f'{path}/data/periods.json').read()
+        profesores_data = JsonFile(f'{path}/data/teachers.json').read()
+        asignaturas_data = JsonFile(f'{path}/data/subjects.json').read()
 
-            opcion = input("Seleccione una opción: ")
+        while True:
+            print(f"{cyan_color}1. Listar todos los registros de calificaciones")
+            print("2. Buscar registro por ID")
+            print(f"3. Volver{reset_color}")
+
+            opcion = input(f"{red_color}Seleccione una opción: {reset_color}")
 
             if opcion == '1':
+                borrarPantalla()
                 for grade_dict in data:
-                    # Convertir el diccionario a un objeto Nota para acceder a los atributos de forma más clara
-                    periodo = Periodo(grade_dict['_periodo']['id'], grade_dict['_periodo']['periodo'], grade_dict['_periodo']['active'])
-                    profesor = Profesor(grade_dict['_profesor']['cedula'], grade_dict['_profesor']['nombre'], grade_dict['_profesor']['active'])
-                    asignatura = Asignatura(grade_dict['_asignatura']['id'], grade_dict['_asignatura']['descripcion'], grade_dict['_asignatura']['nivel'], grade_dict['_asignatura']['active'])
-                    grade = Nota(grade_dict['id'], periodo, profesor, asignatura, grade_dict['active'])
+                    print(f'{cyan_color} Periodo:  {grade_dict['_periodo_id']}  Profesor: {grade_dict['_profesor_id']}  Asignatura: {grade_dict['_asignatura_id']} {reset_color}')
 
-                    print(f"\nID: {grade.id}, Periodo: {grade.periodo.periodo}, Profesor: {grade.profesor.nombre}, Asignatura: {grade.asignatura.descripcion}")
-                    for detalle in grade.detalleNota:
-                        print(f"  - Estudiante: {detalle.estudiante.nombre} {detalle.estudiante.apellido}, Nota 1: {detalle.nota1}, Nota 2: {detalle.nota2}, Recuperación: {detalle.recuperacion}, Observación: {detalle.observacion}")
-            
+                    for detalle in grade_dict['_detalleNota']:
+                        estudiantes_data = JsonFile(f'{path}/data/students.json').read()
+                        estudiante_data = next((s for s in estudiantes_data if s['_cedula'] == detalle['_estudiante']['_cedula']), None)  # Corrección aquí
+                        if estudiante_data:
+                            nombre_estudiante = estudiante_data['_nombre'] + " " + estudiante_data['_apellido']
+                        else:
+                             nombre_estudiante = "Estudiante no encontrado"
+
+                        print(f"  - Estudiante: {nombre_estudiante}, Nota 1: {detalle['_nota1']}, Nota 2: {detalle['_nota2']}, Recuperación: {detalle.get('_recuperacion')}, Observación: {detalle.get('_observacion')}")
             elif opcion == '2':
-                id = self.valida.solo_numeros("Ingrese el ID del registro a buscar: ", "ID inválido. Ingrese un número entero positivo.")
-                grade_dict = next((g for g in data if g['id'] == int(id)), None)
+                borrarPantalla()
+                id = self.valida.solo_numeros("Ingrese el ID del registro a buscar: ", "ID inválido. Ingrese un número entero positivo.", 0, 5)
+                grade_dict = next((g for g in data if g['_id'] == id), None)
                 if grade_dict:
-                    periodo = Periodo(grade_dict['_periodo']['id'], grade_dict['_periodo']['periodo'], grade_dict['_periodo']['active'])
-                    profesor = Profesor(grade_dict['_profesor']['cedula'], grade_dict['_profesor']['nombre'], grade_dict['_profesor']['active'])
-                    asignatura = Asignatura(grade_dict['_asignatura']['id'], grade_dict['_asignatura']['descripcion'], grade_dict['_asignatura']['nivel'], grade_dict['_asignatura']['active'])
-                    grade = Nota(grade_dict['id'], periodo, profesor, asignatura, grade_dict['active'])
-
-                    print(f"\nID: {grade.id}, Periodo: {grade.periodo.periodo}, Profesor: {grade.profesor.nombre}, Asignatura: {grade.asignatura.descripcion}")
-                    for detalle in grade.detalleNota:
-                        print(f"  - Estudiante: {detalle.estudiante.nombre} {detalle.estudiante.apellido}, Nota 1: {detalle.nota1}, Nota 2: {detalle.nota2}, Recuperación: {detalle.recuperacion}, Observación: {detalle.observacion}") 
+                    print(f"\nID: {grade_dict['_id']}, Periodo: {grade_dict['_periodo_id']}, Profesor: {grade_dict['_profesor_id']}, Asignatura: {grade_dict['_asignatura_id']}")
+                    for detalle in grade_dict['_detalleNota']:
+                        estudiantes_data = JsonFile(f'{path}/data/students.json').read()
+                        estudiante_data = next((s for s in estudiantes_data if s['_cedula'] == detalle['_estudiante']['_cedula']), None)  
+                        if estudiante_data:
+                            nombre_estudiante = estudiante_data['_nombre'] + " " + estudiante_data['_apellido']
+                        else:
+                             nombre_estudiante = "Estudiante no encontrado"
+                        
+                        print(f"  - Estudiante: {nombre_estudiante}, Nota 1: {detalle['_nota1']}, Nota 2: {detalle['_nota2']}, Recuperación: {detalle.get('_recuperacion')}, Observación: {detalle.get('_observacion')}")
                 else:
-                    print("Registro de calificaciones no encontrado.")
+                    print(f"{red_color}{' Registro de notas no encontrado. '.center(80)}{reset_color}")
+                    time.sleep(2)
+
             elif opcion == '3':
                 break
             else:
-                print("Opción inválida. Intente de nuevo.")
+                print(f"{red_color}{' Opción inválida. Intente de nuevo. '.center(80)}{reset_color}")
+                time.sleep(2)
+
+
+
+
