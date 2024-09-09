@@ -1,1 +1,57 @@
-[{"_id": 1, "_periodo": 
+[
+  {
+    "_id": 1,
+    "_periodo": "2024-2025",
+    "_profesor": "Snayder",
+    "_asignatura": "Calculo",
+    "_detalleNota": [
+      {
+        "_id": null,
+        "_estudiante": {
+          "_cedula": "0944104942",
+          "_nombre": "Snayder",
+          "_apellido": "Cedeno",
+          "_fecha_nacimiento": "2004-05-28",
+          "_fecha_creacion": "2024-09-09",
+          "_active": true
+        },
+        "_nota1": 50.0,
+        "_nota2": 50.0,
+        "_recuperacion": null,
+        "_observacion": ""
+      },
+      {
+        "_id": null,
+        "_estudiante": {
+          "_cedula": "1308955937",
+          "_nombre": "Isabel",
+          "_apellido": "Jimenez",
+          "_fecha_nacimiento": "1987-12-11",
+          "_fecha_creacion": "2024-09-09",
+          "_active": true
+        },
+        "_nota1": 50.0,
+        "_nota2": 50.0,
+        "_recuperacion": null,
+        "_observacion": ""
+      },
+      {
+        "_id": null,
+        "_estudiante": {
+          "_cedula": "0951817857",
+          "_nombre": "Frank",
+          "_apellido": "Borja",
+          "_fecha_nacimiento": "2002-10-30",
+          "_fecha_creacion": "2024-09-09",
+          "_active": true
+        },
+        "_nota1": 50.0,
+        "_nota2": 50.0,
+        "_recuperacion": null,
+        "_observacion": ""
+      }
+    ],
+    "_fecha_creacion": "2024-09-09",
+    "_active": true
+  }
+]

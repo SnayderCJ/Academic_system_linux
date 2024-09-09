@@ -1,10 +1,16 @@
 import json
 from datetime import date
+from nivel import Nivel
+from estudiante import Estudiante
 
 class DateEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, date):
             return o.strftime('%Y-%m-%d')
+        elif isinstance(o, Nivel):
+            return o.__dict__ 
+        elif isinstance(o, Estudiante): 
+            return o.__dict__ 
         return super().default(o)
 
 class JsonFile:

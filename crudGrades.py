@@ -35,6 +35,7 @@ class CrudGrades(Icrud):
         asignaturas_data = JsonFile(f'{path}/data/subjects.json').read()
 
         # Mostrar periodos disponibles (solo los activos)
+        borrarPantalla()
         print(f"{cyan_color}\nPeriodos disponibles:{reset_color}")
         for periodo in periodos_data:
             if periodo.get('_active'):
@@ -49,6 +50,7 @@ class CrudGrades(Icrud):
                 print(f"{yellow_color}{' Periodo no encontrado o inactivo. Intente de nuevo. '.center(80)}{reset_color}")
 
         # Mostrar profesores disponibles (solo los activos)
+        borrarPantalla()
         print(f"{cyan_color}\nProfesores disponibles:{reset_color}")
         for profesor in profesores_data:
             if profesor.get('_active'):
@@ -63,6 +65,7 @@ class CrudGrades(Icrud):
                 print(f"{yellow_color}{' Profesor no encontrado o inactivo. Intente de nuevo. '.center(80)}{reset_color}")
 
         # Mostrar asignaturas disponibles (solo las activas)
+        borrarPantalla()
         print(f"{cyan_color}\nAsignaturas disponibles:{reset_color}")
         for asignatura in asignaturas_data:
             if asignatura.get('_active'):
@@ -80,11 +83,12 @@ class CrudGrades(Icrud):
         estudiantes_data = JsonFile(f'{path}/data/students.json').read()
 
         # Crear la instancia de Nota
+         # Crear la instancia de Nota, almacenando solo los IDs
         nueva_nota = Nota(id, 
-                          Periodo(periodo_seleccionado['_id'], periodo_seleccionado['_periodo'], periodo_seleccionado.get('_active', True)),
-                          Profesor(profesor_seleccionado['_cedula'], profesor_seleccionado['_nombre'], profesor_seleccionado.get('_active', True)),
-                          Asignatura(asignatura_seleccionada['_id'], asignatura_seleccionada['_descripcion'], asignatura_seleccionada.get('_nivel'), asignatura_seleccionada.get('_active', True))
-                         )
+                        periodo_seleccionado['_periodo'], 
+                        profesor_seleccionado['_nombre'],
+                        asignatura_seleccionada['_descripcion']
+                        )
 
         for estudiante_data in estudiantes_data:
             if estudiante_data.get('_active'): 
@@ -97,13 +101,18 @@ class CrudGrades(Icrud):
                         observacion = input(f"Ingrese una observación para {estudiante._nombre} (opcional): ")
 
                         detalle = DetalleNota(None, estudiante, float(nota1), float(nota2),
-                                              float(recuperacion) if recuperacion else None, observacion)
+                                            float(recuperacion) if recuperacion else None, observacion)
                         nueva_nota.add_detalle_nota(detalle) 
                         break
                     except ValueError as e:
                         print(f"Error: {e}")
 
-        grades_data.append(nueva_nota.__dict__) 
+        grades_data.append(nueva_nota.__dict__)
+        
+        for grade in grades_data:
+            # Convertir el objeto DetalleNota dentro de _detalleNota a diccionarios
+            grade['_detalleNota'] = [detalle.__dict__ for detalle in grade['_detalleNota']]
+
         self.json_file.save(grades_data)
         print(f"{green_color}{' Registro de calificaciones creado exitosamente. '.center(80)}{reset_color}")
         time.sleep(2)
@@ -129,9 +138,9 @@ class CrudGrades(Icrud):
             grade._detalleNota = detalles_nota
 
             # Lógica para obtener nuevos periodo_id, profesor_id y asignatura_id, validando que existan (similar a create())
-            periodos_data = JsonFile(PERIODS_FILE).read()
-            profesores_data = JsonFile(TEACHERS_FILE).read()
-            asignaturas_data = JsonFile(SUBJECTS_FILE).read()
+            periodos_data = JsonFile(f'{path}/data/periods.json').read()
+            profesores_data = JsonFile(f'{path}/data/teachers.json').read()
+            asignaturas_data = JsonFile(f'{path}/data/subjects.json').read()
 
             # Mostrar periodos disponibles
             print("\nPeriodos disponibles:")
