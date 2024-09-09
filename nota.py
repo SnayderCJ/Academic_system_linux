@@ -17,13 +17,9 @@ class Nota:
         self._fecha_creacion = date.today()
         self._active = active
 
-    # ... (Propiedades para los atributos)
-
     def add_detalle_nota(self, detalle_nota: DetalleNota):
-        
-        estudiante_id = detalle_nota.estudiante.id
-        if any(dn.estudiante.id == estudiante_id for dn in self._detalleNota):
+
+        estudiante_id = detalle_nota.estudiante._cedula
+        if any(dn.estudiante._cedula == estudiante_id for dn in self._detalleNota):
             raise ValueError("El estudiante ya tiene una nota registrada para esta asignatura y periodo.")
         self._detalleNota.append(detalle_nota)
-
-    # ... (Otros métodos según sea necesario)

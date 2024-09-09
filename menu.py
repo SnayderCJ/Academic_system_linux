@@ -100,7 +100,7 @@ while opc != '7':
         opc5 = ''
         while opc5 != '5':
             borrarPantalla()
-            menu_grades = Menu("Menu Periodo", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
+            menu_periods = Menu("Menu Periodo", [f"{cyan_color}1) Crear", "2) Actualizar", "3) Eliminar", "4) Consultar", "5) Salir"])
             opc5 = menu_periods.menu() 
             crud = CrudPeriodo()
             if opc5 == '1':

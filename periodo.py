@@ -11,7 +11,7 @@ class Periodo:
 
         self._id = id
         self._periodo = periodo
-        self.fecha_creacion = date.today().strftime('%Y-%m-%d')
+        self._fecha_creacion = date.today().strftime('%Y-%m-%d')
         self._active = active
 
     @property
@@ -33,8 +33,6 @@ class Periodo:
     def active(self):
         """Obtiene el estado de actividad del período."""
         return self._active
-    
-    
 
     def activar(self):
         """Activa el período."""

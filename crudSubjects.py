@@ -87,6 +87,7 @@ class CrudSubjects(Icrud):
 
             if not niveles_activos:
                 print(f"{yellow_color}No hay niveles activos registrados. No se puede actualizar el nivel de la asignatura.{reset_color}")
+                time.sleep(2)
             else:
                 print("\nNiveles disponibles:")
                 for nivel in niveles_activos:
